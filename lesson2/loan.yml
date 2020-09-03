@@ -5,15 +5,6 @@ loan_amount: what is your loan amount in dollars
 wrong_num: Hmm.. that doesn't look like a valid number
 APR: What's your Annual Percentage Rate?
 duration: What's the loan duration in years?
-operator_prompt:
-    What operation would you like to perform?
-    1) add
-    2) subtract
-    3) multiply
-    4) divide
-
-choose: Must choose 1,2,3,4
-process: the two numbers...
-result: The result is
+result: Your monthly payment is ..
 another: Do you want to perform another operation?(Y to calculate again)
 thank_you: Thank you for using the calculator. Goodbye!
