@@ -1,0 +1,29 @@
+#RB101-RB109 Lesson 2
+#RPS: Bonus features
+
+welcome: Welcome to the rock paper scissors lizard spock game!
+rules:
+    "The rules are\n
+    Scissors cuts Paper\n
+    Paper covers Rock\n
+    Rock crushes Lizard\n
+    Lizard poisons Spock\n
+    Spock smashes Scissors\n
+    Scissors decapitates Lizard\n
+    Lizard eats Paper\n
+    Paper disproves Spock\n
+    Spock vaporizes Rock\n
+    Rock crushes Scissors\n"
+player_won: You won!
+computer_won: Computer won!
+tie: It's a tie!
+choice:
+    "Please choose one: r ,p ,sc ,l ,sp \n
+    (for rock, paper, scissors, spock or lizard)"
+not_valid: That's not a valid choice
+again: Do you want to play again?
+win_condition: The match will end when one sides wins
+continue: Do you want to continue?(please input yes or no)
+begin: Would you like to begin?(please input yes or no)
+game_end: The game will not start. Thank you for coming
+game_start: The game will start now.
