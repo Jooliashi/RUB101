@@ -1,0 +1,52 @@
+# PROBLEM:
+
+# Given a string, write a method `palindrome_substrings` which returns
+# all the substrings from a given string which are palindromes. Consider
+# palindrome words case sensitive.
+
+# Test cases:
+
+# palindrome_substrings("supercalifragilisticexpialidocious") == ["ili"]
+# palindrome_substrings("abcddcbA") == ["bcddcb", "cddc", "dd"]
+# palindrome_substrings("palindrome") == []
+# palindrome_substrings("") == []
+some questions:
+what is a substring?
+Will inputs always be strings with no space?
+
+Input: string
+output: new array
+rules:
+  every palindrome in the string must be added to the array
+  it is case sensitive
+
+def palindrome_substrings(str)
+  result = []
+  substrings_arr = substrings(str)
+  substrings_arr.each do |substring|
+    result << substring if is_palindrome?(substirng)
+  end
+  result
+end
+
+psuedo example
+
+START
+
+  /* Given a string named 'string' */
+
+  SET result = []
+  SET starting_index = 0
+
+  WHILE starting_index <= length of the string -2
+    SET numChars = 2
+    WHILE numChars <= length of string - starting index
+      SET substring = num_chars characters from string starting at index starting_index
+      append substring to result array
+      SET num_chars += 1
+
+    SET starting_index += 1
+
+  RETURN result
+
+END
