@@ -1,0 +1,6 @@
+pieces of information to keep track of:
+1. type of action(method call, block, conditional)
+2. object
+3. side effect
+4. return value
+5. is return value used?
