@@ -120,7 +120,7 @@ def play_again?
 end
 
 system 'cls'
-prompt "Welcome to the Twenty-One game."
+prompt "Welcome to the #{WINNING_LIMIT} game."
 prompt "This is a one player vs one dealer game; player will go first"
 prompt "The game will start now"
 
