@@ -8,6 +8,8 @@ algorithm:
   use three conditions to output three types
   attach the types to the string
 =end
+require 'pry'
+require 'pry-byebug'
 
 def fizzbuzz(number1, number2)
   numbers = (number1..number2).to_a
@@ -20,6 +22,7 @@ def fizzbuzz(number1, number2)
 end
 
 def fizzbuzz_value(number)
+  binding.pry
   case
   when number % 15 == 0
     'FizzBuzz'
