@@ -1,18 +1,3 @@
-=begin
-1. initialize deck
-2. deal cards to player and dealer
-3. player turn: hit or stay
-  - repeat until bust or "stay"
-4. If player bust, dealer wins
-5. Dealer turn: hit or stay
-  - repeat until total >= 17
-6. If dealer bust, player wins
-7. Compare cards and declare winner
-
-Data structure: hash and arrays
-=end
-
-require 'pry'
 WINNING_LIMIT = 21
 DEALER_LIMIT = 17
 SUITS = { 'S' => 'Spade',
@@ -60,7 +45,10 @@ def display_cards(deck, all = false)
   if all
     prompt("Dealer's cards are: " + joinor(deck['dealer']), 0)
   else
-    prompt("Dealer's cards are: one hidden card, " + joinor(deck['dealer'][1..-1]), 0.7)
+    prompt(
+      "Dealer's cards are: one hidden card, " + joinor(deck['dealer'][1..-1]),
+      0.7
+    )
   end
 end
 
@@ -169,9 +157,9 @@ loop do
     end
   end
 
-  display_cards(deck,true)
+  display_cards(deck, true)
   statement = detect_winner(player_total, dealer_total)
-  prompt(statement, 1.5)
+  prompt(statement)
   if statement.downcase.include?('you won')
     player_wins += 1
   elsif statement.downcase.include?('dealer won')
@@ -186,6 +174,5 @@ if player_wins == 5
 elsif dealer_wins == 5
   prompt("Dealer is the grand winner, thank you for playing", 0)
 else
-  prompt("Thank you for playing",0)
+  prompt("Thank you for playing", 0)
 end
-
