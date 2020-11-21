@@ -13,12 +13,12 @@ def clear_screen
   system 'cls'
 end
 
-def display_suits(arr)
+def turn_to_string(arr)
   arr.map { |sub| "#{sub['suit']} #{sub['value']}" }
 end
 
 def joinor(array, division = ', ')
-  array = display_suits(array)
+  array = turn_to_string(array)
   case array.size
   when 1 then "and #{array[0]}"
   when 2 then array.join(" and ")
