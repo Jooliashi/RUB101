@@ -1,62 +1,92 @@
 WINNING_LIMIT = 21
 DEALER_LIMIT = 17
-SUITS = { 'S' => 'Spade',
-          'D' => 'Diamond',
-          'C' => 'Club',
-          'H' => 'Heart' }
+SUITS = ['Spade', 'Diamond','Club','Heart']
 VALUES = (2..10).to_a.map(&:to_s) + ['J', 'Q', 'K', 'A']
+require 'pry'
 
 def prompt(msg, pause_time = 1.2)
   puts "=> #{msg}"
   sleep(pause_time)
 end
 
-def display_suits(arr)
-  arr.map { |sub| "#{SUITS[sub[0]]} #{sub[1]}" }
+def clear_screen
+  system 'cls'
 end
 
-def joinor(array, division = ', ', ending = 'and')
+def display_suits(arr)
+  arr.map { |sub| "#{sub['suit']} #{sub['value']}" }
+end
+
+def joinor(array, division = ', ')
   array = display_suits(array)
   case array.size
-  when 1
-    "and #{array[0]}"
-  when 2
-    "#{array[0]} #{ending} #{array[1]}"
+  when 1 then "and #{array[0]}"
+  when 2 then array.join(" and ")
   else
-    last = array.last
-    result = ''
-    array[0..-2].each do |element|
-      result << element << division
-    end
-    result << ending << ' ' << last.to_s
+    array[-1] = "and #{array.last}"
+    array.join(division)
   end
 end
 
 def initialize_deck
-  suits = SUITS.keys
-  total = suits.product(VALUES)
+  total = SUITS.product(VALUES).each_with_object([]) do |sub, arr|
+    arr << {'suit' => sub[0], 'value' => sub[1]}
+  end
 
-  { 'player' => [], 'dealer' => [], "rest" => total }
+  initialize_deck_score(total)
+
+  total.shuffle
 end
 
-def display_cards(deck, all = false)
-  system 'cls'
-  prompt("Player's cards are: " + joinor(deck['player']), 0)
-  if all
-    prompt("Dealer's cards are: " + joinor(deck['dealer']), 0)
-  else
-    prompt(
-      "Dealer's cards are: one hidden card, " + joinor(deck['dealer'][1..-1]),
-      0.7
-    )
+def initialize_deck_score(deck)
+  deck.map do |card|
+    card['score'] = if card['value'] == 'A'
+                        11
+                    elsif card['value'].to_i == 0
+                        10
+                    else
+                      card['value'].to_i
+                    end
   end
 end
 
-def deal_cards(deck, whose_turn)
-  prompt("Drawing one card for #{whose_turn}...", 0.7)
-  draw = deck['rest'].sample
-  deck[whose_turn] << draw
-  deck['rest'].delete(draw)
+def present_details(cards, all = true)
+  if all
+    joinor(cards)
+  else
+    "one hidden card, #{joinor(cards[1..-1])}"
+  end
+end
+
+def display_cards(player_cards, dealer_cards, all = true )
+  clear_screen
+  prompt("Player's cards are #{present_details(player_cards)}", 0)
+  prompt("Dealer's cards are #{present_details(dealer_cards, all)}", 0.7)
+end
+
+def deal_cards(deck, whose_cards)
+  whose_cards << deck.pop
+  update_A_score(whose_cards)
+end
+
+def cards_total_score(cards)
+  cards.map { |card| card['score'] }.sum
+end
+
+def update_A_score(cards)
+  total = cards_total_score(cards)
+  if total > 21
+    cards.each do |card|
+      if card['value'] == 'A'
+        card['score'] = 1
+      end
+    end
+  end
+end
+
+def draw_card_prompts
+  prompt("Drawing one card for player...", 0.7)
+  prompt("Drawing one card for dealer...", 0.7)
 end
 
 def hit_or_stay?(whose_turn)
@@ -68,26 +98,6 @@ def hit_or_stay?(whose_turn)
     prompt "This is not a valid answer, h or s only"
   end
   answer
-end
-
-def total(cards)
-  values = cards.map { |card| card[1] }
-
-  total = values.reduce(0) do |sum, value|
-    sum + if value == 'A'
-            11
-          elsif value.to_i == 0
-            10
-          else
-            value.to_i
-          end
-  end
-
-  values.select { |value| value == 'A' }.count.times do
-    total -= 10 if total > WINNING_LIMIT
-  end
-
-  total
 end
 
 def busted?(total)
@@ -114,35 +124,46 @@ end
 
 def play_again?
   prompt("-----------", 0)
-  prompt("Do you want to play again", 0)
-  answer = gets.chomp
-  answer.downcase.start_with?('y')
+  prompt("Do you want to play again, y or n", 0)
+  answer = ''
+  loop do
+    answer = gets.chomp.downcase
+    break if ['y', 'n'].include?(answer)
+    prompt("invalid answer, y or n only please")
+  end
+    answer.downcase.start_with?('y')
 end
 
-system 'cls'
+clear_screen
 prompt "Welcome to the #{WINNING_LIMIT} game."
 prompt "This is a one player vs one dealer game; player will go first"
 prompt "The game will start now"
 
 player_wins = 0
 dealer_wins = 0
-loop do
-  system 'cls'
-  deck = initialize_deck
-  prompt "We will now deal the cards"
-  2.times { deal_cards(deck, 'player') }
-  2.times { deal_cards(deck, 'dealer') }
-  display_cards(deck)
 
-  player_total = total(deck['player'])
-  dealer_total = total(deck['dealer'])
+loop do
+  clear_screen
+  deck = initialize_deck
+  player_cards = []
+  dealer_cards = []
+  prompt "We will now deal the cards"
+  2.times do
+    deal_cards(deck, player_cards)
+    deal_cards(deck, dealer_cards)
+    draw_card_prompts
+  end
+  display_cards(player_cards, dealer_cards, false)
+
+  player_total = cards_total_score(player_cards)
+  dealer_total = cards_total_score(dealer_cards)
   player_answer = ''
   loop do
     player_answer = hit_or_stay?('Player')
     break if player_answer == 's' || busted?(player_total)
-    deal_cards(deck, 'player')
-    display_cards(deck)
-    player_total = total(deck['player'])
+    deal_cards(deck, player_cards)
+    display_cards(player_cards, dealer_cards, false)
+    player_total = cards_total_score(player_cards)
     break if busted?(player_total)
   end
 
@@ -151,13 +172,14 @@ loop do
     loop do
       break if dealer_total >= DEALER_LIMIT
       prompt "Dealer hits!"
-      deal_cards(deck, 'dealer')
-      display_cards(deck)
-      dealer_total = total(deck['dealer'])
+      deal_cards(deck, dealer_cards)
+      display_cards(player_cards, dealer_cards, false)
+      dealer_total = cards_total_score(dealer_cards)
     end
+    prompt("Dealer decided to stay") if dealer_total < WINNING_LIMIT
   end
 
-  display_cards(deck, true)
+  display_cards(player_cards, dealer_cards)
   statement = detect_winner(player_total, dealer_total)
   prompt(statement)
   if statement.downcase.include?('you won')
