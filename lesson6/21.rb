@@ -1,6 +1,6 @@
 WINNING_LIMIT = 21
 DEALER_LIMIT = 17
-SUITS = ['Spade', 'Diamond','Club','Heart']
+SUITS = ['Spade', 'Diamond', 'Club', 'Heart']
 VALUES = (2..10).to_a.map(&:to_s) + ['J', 'Q', 'K', 'A']
 require 'pry'
 
@@ -30,7 +30,7 @@ end
 
 def initialize_deck
   total = SUITS.product(VALUES).each_with_object([]) do |sub, arr|
-    arr << {'suit' => sub[0], 'value' => sub[1]}
+    arr << { 'suit' => sub[0], 'value' => sub[1] }
   end
 
   initialize_deck_score(total)
@@ -41,9 +41,9 @@ end
 def initialize_deck_score(deck)
   deck.map do |card|
     card['score'] = if card['value'] == 'A'
-                        11
+                      11
                     elsif card['value'].to_i == 0
-                        10
+                      10
                     else
                       card['value'].to_i
                     end
@@ -58,7 +58,7 @@ def present_details(cards, all = true)
   end
 end
 
-def display_cards(player_cards, dealer_cards, all = true )
+def display_cards(player_cards, dealer_cards, all = true)
   clear_screen
   prompt("Player's cards are #{present_details(player_cards)}", 0)
   prompt("Dealer's cards are #{present_details(dealer_cards, all)}", 0.7)
@@ -66,14 +66,14 @@ end
 
 def deal_cards(deck, whose_cards)
   whose_cards << deck.pop
-  update_A_score(whose_cards)
+  update_a_score(whose_cards)
 end
 
 def cards_total_score(cards)
   cards.map { |card| card['score'] }.sum
 end
 
-def update_A_score(cards)
+def update_a_score(cards)
   total = cards_total_score(cards)
   if total > 21
     cards.each do |card|
@@ -131,7 +131,7 @@ def play_again?
     break if ['y', 'n'].include?(answer)
     prompt("invalid answer, y or n only please")
   end
-    answer.downcase.start_with?('y')
+  answer.downcase.start_with?('y')
 end
 
 clear_screen
