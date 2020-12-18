@@ -32,17 +32,11 @@ def prompt(msg)
 end
 
 def joinor(array, division = ', ', ending = 'or')
-  case array.size
-  when 0 then ''
-  when 1 then array.first
-  when 2 then "#{array[0]} #{ending} #{array[1]}"
+  last = array.pop.to_s
+  if array.empty?
+    last
   else
-    last = array.pop
-    result = ''
-    array.each do |element|
-      result << element.to_s << division
-    end
-    result << ending << ' ' << last.to_s
+    array.join(division) + division + ending + " " + last
   end
 end
 
